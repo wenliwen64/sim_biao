@@ -5,4 +5,3 @@ root -b <<EOF >& log/$1.log
 main($1)
 .q
 EOF
-
