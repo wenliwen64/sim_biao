@@ -109,13 +109,18 @@ Double_t CalA(Double_t* Num)
 }
 
 
-int main(int argc=0)
+int simulation_v2(int argc=0, int eventsnum = 100000)
 {
   
   Double_t v2=0.05;
   Double_t a=0.02;
 
   //***********************************************************
+  char filename[50]; 
+  sprintf(filename,"./root/simulation_%d.root", argc);
+
+  TFile* f = new TFile(filename, "Recreate");
+
 
   char tmp[128];
 
@@ -296,7 +301,7 @@ int main(int argc=0)
   TRandom3 a1(0),a2(0),a3(0);
   Double_t b1,b2,b3;
   
-  while(nEvent<1000)
+  while(nEvent < eventsnum)
     {
       Int_t nParticles=0;  
 
@@ -1306,11 +1311,7 @@ int main(int argc=0)
     }
   
 
-  sprintf(tmp,"./root/simulation_%d.root",argc);
-
-  TFile* f = new TFile(tmp,"Recreate");
-
-
+  
   hphi_p_east->Write(); 
   hphi_n_east->Write();  
   hphi_p_west->Write();  
