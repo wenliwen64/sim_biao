@@ -214,6 +214,9 @@ int main(int argc=0)
   TH2D* ChPlMiLR[4];
   TH2D* ChPlMiStLR[4];
 
+
+  TH1D* hanglediff_eastv2_westep = new TH1D("angle diff east v2 west ep", 100, -3.1415926, 3.1415926);
+  TH1D* hanglediff_westv2_eastep = new TH1D("angle diff west v2 east ep", 100, -3.1415926, 3.1415926);
   //*******0 east_rp****1 west_rp****2 east_ep****3 west_ep*******
 
   for(Int_t i=0;i<4;i++)
@@ -307,6 +310,7 @@ int main(int argc=0)
       Double_t EP_sin_west=0;
       Double_t EP_cos_west=0;
 
+//===========Loop below is to generate particles and store eta information=========================
       while(nParticles<nn)
 	{
 	  //b1=a1.Rndm();
@@ -322,7 +326,7 @@ int main(int argc=0)
 		      Phi[nParticles]=2.0*TMath::Pi()*b3;
 		      Charge[nParticles]=1;
 		      flag1=1;		     
-		      if(nParticles%2==0)
+		      if(nParticles%2==0) //=======So gurantee half eta > 0 half eta < 0==================
 			{
 			  Eta[nParticles]=-1;
 			  hphi_p_east->Fill(Phi[nParticles]);
@@ -392,6 +396,7 @@ int main(int argc=0)
       hEP[0]->Fill(EP_east);
       hEP[1]->Fill(EP_west);
       hEP[2]->Fill(EP_full);
+   
 
       hRes->Fill(cos(2*(EP_east-EP_west)));
    
@@ -405,8 +410,8 @@ int main(int argc=0)
 
       //**********************RP************************
 
-      double *NumOfChPoUD_east_rp=new double[2];
-      double *NumOfChPoStUD_east_rp=new double[2];
+      double *NumOfChPoUD_east_rp=new double[2]; //======Number of positively charged particles up-0 and down-1 in east sub-event========
+      double *NumOfChPoStUD_east_rp=new double[2]; //=======St??=======
       double *NumOfChNeUD_east_rp=new double[2];
       double *NumOfChNeStUD_east_rp=new double[2];
       
@@ -425,7 +430,7 @@ int main(int argc=0)
       double *NumOfChNeLR_west_rp=new double[2];
       double *NumOfChNeStLR_west_rp=new double[2];
 
-      double p_sumcos_east_rp,p_sumcos_west_rp;
+      double p_sumcos_east_rp,p_sumcos_west_rp; //======sum of positive particle cosine terms======
       double p_sumsin_east_rp,p_sumsin_west_rp;
       double n_sumcos_east_rp,n_sumcos_west_rp;
       double n_sumsin_east_rp,n_sumsin_west_rp;
@@ -871,7 +876,7 @@ int main(int argc=0)
 	}
 
 
-     
+    
       //************************************************************************
       
       //****************************calculation*********************************
@@ -923,6 +928,7 @@ int main(int argc=0)
 
       int iflag1=1;
       
+//==============================????????========================
       if((AChPoUD_east_rp=CalA(NumOfChPoUD_east_rp))>0.8) {iflag1=0;}
       if((AChPoStUD_east_rp=CalA(NumOfChPoStUD_east_rp))>0.8) {iflag1=0;}
       if((AChNeUD_east_rp=CalA(NumOfChNeUD_east_rp))>0.8) {iflag1=0;}
@@ -1123,6 +1129,14 @@ int main(int argc=0)
       hv2ch[2]->Fill(v2ch_east_ep);
       hv2ch[3]->Fill(v2ch_west_ep);
       hv2[1]->Fill(v2full_ep);     
+
+      //==========================Angle difference between east and west for events with v2==0 ======
+      if(fabs(v2ch_east_ep) < 1e-4)
+	  hanglediff_eastv2_westep->Fill(EP_east - EP_west); 
+      else if(fabs(v2ch_west_ep) < 1e-4)
+	  hanglediff_westv2_eastep->Fill(EP_east - EP_west); 
+ 
+
 
       int iflag3=1;
       
