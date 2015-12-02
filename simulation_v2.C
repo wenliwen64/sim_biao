@@ -178,6 +178,8 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
   TH1D* hRes = new TH1D("Res","",200,-1,1);
 
   TH1D* hEP[3];
+  //===========hmsc========
+  TProfile* hmsc_rp = new TProfile("msc_ss_in_rp", "msc_ss_in_rp", 4, 0.5, 4.5);
 
   //******************0 east****1 west****2 full******************
 
@@ -306,6 +308,7 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       Int_t nParticles=0;  
 
       Double_t Phi[nn];
+      Int_t Quadrant[nn]; //======added by liwen======
       Int_t Charge[nn];
       Int_t Eta[nn];   
 
@@ -332,6 +335,7 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		    {	    
 		      Phi[nParticles]=2.0*TMath::Pi()*b3;
 		      Charge[nParticles]=1;
+                      Quadrant[nParticles] = Phi_bin(Phi[nParticles]);
 		      flag1=1;		     
 		      if(nParticles%2==0) //=======So gurantee half eta > 0 half eta < 0==================
 			{
@@ -367,6 +371,7 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		    {	    
 		      Phi[nParticles]=2.0*TMath::Pi()*b3;
 		      Charge[nParticles]=-1;
+                      Quadrant[nParticles] = Phi_bin(Phi[nParticles]);
 		      flag2=1;		      
 		      if(nParticles%2==1)
 			{
@@ -408,6 +413,29 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       hRes->Fill(cos(2*(EP_east-EP_west)));
    
       //************************************************************************
+      //===============Compute the MSC Correlator==============================
+      for(int i = 0; i < nn; i++){
+          int sign_in_0 = (Quadrant[i] == 1 || Quadrant[i] == 4)? 1 : -1;
+          int sign_out_0 = (Quadrant[i] == 1 || Quadrant[i] == 2)? 1 : -1;
+          for(int j = 0; j < nn; j++){
+              if(i == j) continue;
+
+              int sign_in_1 = (Quadrant[j] == 1 || Quadrant[j] == 4)? 1 : -1;
+              int sign_out_1 = (Quadrant[j] == 1 || Quadrant[j] == 2)? 1 : -1;
+              if(Charge[i] == Charge[j]){
+		  double ss_in_rp = sign_in_0 * sign_in_1;
+		  double ss_out_rp = sign_out_0 * sign_out_1;
+		  hmsc_rp->Fill(1, ss_in_rp);
+		  hmsc_rp->Fill(2, ss_out_rp);
+              }
+              else{
+                  double os_in_rp = sign_in_0 * sign_in_1;
+                  double os_out_rp = sign_out_0 * sign_out_1;
+		  hmsc_rp->Fill(3, os_in_rp);
+		  hmsc_rp->Fill(4, os_out_rp);
+	      }
+	  }
+      }
       
       //***************************A and gamma**********************************
      
