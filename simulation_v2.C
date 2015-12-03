@@ -413,10 +413,17 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       hRes->Fill(cos(2*(EP_east-EP_west)));
    
       //************************************************************************
+      for(int i = 0; i < nn; i++){
+          Quadrant_east_ep[i] = Phi_bin(cycle(Phi[i] - Ep_east));
+          Quadrant_west_ep[i] = Phi_bin(cycle(Phi[i] - Ep_east));
+      }
       //===============Compute the MSC Correlator==============================
       for(int i = 0; i < nn; i++){
           int sign_in_0 = (Quadrant[i] == 1 || Quadrant[i] == 4)? 1 : -1;
           int sign_out_0 = (Quadrant[i] == 1 || Quadrant[i] == 2)? 1 : -1;
+
+
+          int Quadrant_east_ep[i] = 
           for(int j = 0; j < nn; j++){
               if(i == j) continue;
 
