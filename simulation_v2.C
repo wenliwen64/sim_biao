@@ -6,6 +6,7 @@
 #include <TRandom3.h>
 #include <TMath.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace TMath;
@@ -179,8 +180,14 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 
   TH1D* hEP[3];
   //===========hmsc========
-  TProfile* hmsc_rp = new TProfile("msc_ss_in_rp", "msc_ss_in_rp", 4, 0.5, 4.5);
+  TProfile* hmsc_west_ep = new TProfile("msc_west_ep", "msc_west_ep", 6, 0.5, 6.5);
+  TProfile* hmsc_east_ep = new TProfile("msc_east_ep", "msc_east_ep", 6, 0.5, 6.5);
 
+  TProfile* hmsc_ss_v2_west_ep = new TProfile("msc_ss_v2_west_ep", "msc_ss_v2_west_ep", 20, -0.2, 0.2);
+  TProfile* hmsc_os_v2_west_ep = new TProfile("msc_os_v2_west_ep", "msc_os_v2_west_ep", 20, -0.2, 0.2);
+
+  TProfile* hmsc_ss_v2_east_ep = new TProfile("msc_ss_v2_east_ep", "msc_ss_v2_east_ep", 20, -0.2, 0.2);
+  TProfile* hmsc_os_v2_east_ep = new TProfile("msc_os_v2_east_ep", "msc_os_v2_east_ep", 20, -0.2, 0.2);
   //******************0 east****1 west****2 full******************
 
   for(Int_t i=0;i<3;i++)
@@ -413,36 +420,7 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       hRes->Fill(cos(2*(EP_east-EP_west)));
    
       //************************************************************************
-      for(int i = 0; i < nn; i++){
-          Quadrant_east_ep[i] = Phi_bin(cycle(Phi[i] - Ep_east));
-          Quadrant_west_ep[i] = Phi_bin(cycle(Phi[i] - Ep_east));
-      }
-      //===============Compute the MSC Correlator==============================
-      for(int i = 0; i < nn; i++){
-          int sign_in_0 = (Quadrant[i] == 1 || Quadrant[i] == 4)? 1 : -1;
-          int sign_out_0 = (Quadrant[i] == 1 || Quadrant[i] == 2)? 1 : -1;
-
-
-          int Quadrant_east_ep[i] = 
-          for(int j = 0; j < nn; j++){
-              if(i == j) continue;
-
-              int sign_in_1 = (Quadrant[j] == 1 || Quadrant[j] == 4)? 1 : -1;
-              int sign_out_1 = (Quadrant[j] == 1 || Quadrant[j] == 2)? 1 : -1;
-              if(Charge[i] == Charge[j]){
-		  double ss_in_rp = sign_in_0 * sign_in_1;
-		  double ss_out_rp = sign_out_0 * sign_out_1;
-		  hmsc_rp->Fill(1, ss_in_rp);
-		  hmsc_rp->Fill(2, ss_out_rp);
-              }
-              else{
-                  double os_in_rp = sign_in_0 * sign_in_1;
-                  double os_out_rp = sign_out_0 * sign_out_1;
-		  hmsc_rp->Fill(3, os_in_rp);
-		  hmsc_rp->Fill(4, os_out_rp);
-	      }
-	  }
-      }
+      
       
       //***************************A and gamma**********************************
      
@@ -917,8 +895,7 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 	    }
 	}
 
-
-    
+   
       //************************************************************************
       
       //****************************calculation*********************************
@@ -968,6 +945,8 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       hv2ch[1]->Fill(v2ch_west_rp);
       hv2[0]->Fill(v2full_rp);
 
+
+//**************************************************************
       int iflag1=1;
       
 //==============================????????========================
@@ -1172,6 +1151,183 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       hv2ch[3]->Fill(v2ch_west_ep);
       hv2[1]->Fill(v2full_ep);     
 
+      //===============Compute the MSC Correlatior================================
+      double coefficient = pow(3.1415926/4, 2);
+      std::vector<int> Quadrant_west_ep;
+      std::vector<int> Quadrant_east_ep;
+      std::vector<int> Charge_wrt_west_ep;
+      std::vector<int> Charge_wrt_east_ep;
+      for(int i = 0; i < nn; i++){
+          if(Eta[i] < 0){ // particles in east sub-event
+	      Quadrant_west_ep.push_back(Phi_bin(cycle(Phi[i] - EP_west)));
+              Charge_wrt_west_ep.push_back(Charge[i]); 
+	  }
+          else{
+	      Quadrant_east_ep.push_back(Phi_bin(cycle(Phi[i] - EP_east)));
+              Charge_wrt_east_ep.push_back(Charge[i]);
+	  }
+      }
+
+      assert(Quadrant_west_ep.size() == Quadrant_east_ep.size());
+      assert(Charge_wrt_west_ep.size() == Charge_wrt_east_ep.size());
+
+      //===============Compute the MSC Correlator==============================
+      int npairs_ss_west_ep = 0;
+      int npairs_os_west_ep = 0;
+      double ss_in_west_ep = 0;
+      double ss_out_west_ep = 0;
+      double os_in_west_ep = 0;
+      double os_out_west_ep = 0;
+      for(int i = 0; i < Quadrant_west_ep.size(); i++){
+
+	  int sign_in_0_west_ep = (Quadrant_west_ep[i] == 1 || Quadrant_west_ep[i] == 4)? 1 : -1;
+          int sign_out_0_west_ep = (Quadrant_west_ep[i] == 1 || Quadrant_west_ep[i] == 2)? 1 : -1;
+
+          for(int j = 0; j < Quadrant_west_ep.size(); j++){
+              if(i == j) continue;
+
+	      int sign_in_1_west_ep = (Quadrant_west_ep[j] == 1 || Quadrant_west_ep[j] == 4)? 1 : -1;
+	      int sign_out_1_west_ep = (Quadrant_west_ep[j] == 1 || Quadrant_west_ep[j] == 2)? 1 : -1;
+
+              if(Charge_wrt_west_ep[i] == Charge_wrt_west_ep[j]){
+		  npairs_ss_west_ep++; 
+		  ss_in_west_ep += sign_in_0_west_ep * sign_in_1_west_ep;
+		  ss_out_west_ep += sign_out_0_west_ep * sign_out_1_west_ep;
+	      }
+              else{
+                  npairs_os_west_ep++;
+		  os_in_west_ep += sign_in_0_west_ep * sign_in_1_west_ep;
+                  os_out_west_ep += sign_out_0_west_ep * sign_out_1_west_ep;
+	      }
+	  }
+      }
+
+      ss_in_west_ep /= npairs_ss_west_ep;
+      ss_out_west_ep /= npairs_ss_west_ep;
+      os_in_west_ep /= npairs_os_west_ep;
+      os_out_west_ep /= npairs_os_west_ep;
+
+      hmsc_west_ep->Fill(1, coefficient * ss_in_west_ep);
+      hmsc_west_ep->Fill(2, coefficient * ss_out_west_ep);
+      hmsc_west_ep->Fill(3, coefficient * os_in_west_ep);
+      hmsc_west_ep->Fill(4, coefficient * os_out_west_ep);
+      hmsc_west_ep->Fill(5, coefficient * (ss_in_west_ep - ss_out_west_ep));
+      hmsc_west_ep->Fill(6, coefficient * (os_in_west_ep - os_out_west_ep));
+
+      hmsc_ss_v2_west_ep->Fill(v2ch_east_ep, coefficient * (ss_in_west_ep - ss_out_west_ep));
+      hmsc_os_v2_west_ep->Fill(v2ch_east_ep, coefficient * (os_in_west_ep - os_out_west_ep));
+
+      //<========================Split======================>
+
+      int npairs_ss_east_ep = 0;
+      int npairs_os_east_ep = 0;
+      double ss_in_east_ep = 0;
+      double ss_out_east_ep = 0;
+      double os_in_east_ep = 0;
+      double os_out_east_ep = 0;
+      for(int i = 0; i < Quadrant_east_ep.size(); i++){
+
+	  int sign_in_0_east_ep = (Quadrant_east_ep[i] == 1 || Quadrant_east_ep[i] == 4)? 1 : -1;
+          int sign_out_0_east_ep = (Quadrant_east_ep[i] == 1 || Quadrant_east_ep[i] == 2)? 1 : -1;
+
+          for(int j = 0; j < Quadrant_east_ep.size(); j++){
+              if(i == j) continue;
+
+	      int sign_in_1_east_ep = (Quadrant_east_ep[j] == 1 || Quadrant_east_ep[j] == 4)? 1 : -1;
+	      int sign_out_1_east_ep = (Quadrant_east_ep[j] == 1 || Quadrant_east_ep[j] == 2)? 1 : -1;
+
+              if(Charge_wrt_east_ep[i] == Charge_wrt_east_ep[j]){
+		  npairs_ss_east_ep++; 
+		  ss_in_east_ep += sign_in_0_east_ep * sign_in_1_east_ep;
+		  ss_out_east_ep += sign_out_0_east_ep * sign_out_1_east_ep;
+	      }
+              else{
+                  npairs_os_east_ep++;
+		  os_in_east_ep += sign_in_0_east_ep * sign_in_1_east_ep;
+                  os_out_east_ep += sign_out_0_east_ep * sign_out_1_east_ep;
+	      }
+	  }
+      }
+
+      ss_in_east_ep /= npairs_ss_east_ep;
+      ss_out_east_ep /= npairs_ss_east_ep;
+      os_in_east_ep /= npairs_os_east_ep;
+      os_out_east_ep /= npairs_os_east_ep;
+
+      hmsc_east_ep->Fill(1, coefficient * ss_in_east_ep);
+      hmsc_east_ep->Fill(2, coefficient * ss_out_east_ep);
+      hmsc_east_ep->Fill(3, coefficient * os_in_east_ep);
+      hmsc_east_ep->Fill(4, coefficient * os_out_east_ep);
+      hmsc_east_ep->Fill(5, coefficient * (ss_in_east_ep - ss_out_east_ep));
+      hmsc_east_ep->Fill(6, coefficient * (os_in_east_ep - os_out_east_ep));
+
+      hmsc_ss_v2_east_ep->Fill(v2ch_west_ep, coefficient * (ss_in_east_ep - ss_out_east_ep));
+      hmsc_os_v2_east_ep->Fill(v2ch_west_ep, coefficient * (os_in_east_ep - os_out_east_ep));
+//////////////////////////////////////////////////////////////////////////////
+/*
+      for(int i = 0; i < nn; i++){
+          int sign_in_0_rp = (Quadrant[i] == 1 || Quadrant[i] == 4)? 1 : -1;
+          int sign_out_0_rp = (Quadrant[i] == 1 || Quadrant[i] == 2)? 1 : -1;
+         
+          int sign_in_0_east_ep = (Quadrant_east_ep[i] == 1 || Quadrant_east_ep[i] == 4)? 1 : -1;
+          int sign_out_0_east_ep = (Quadrant_east_ep[i] == 1 || Quadrant_east_ep[i] == 2)? 1 : -1;
+
+          int sign_in_0_west_ep = (Quadrant_west_ep[i] == 1 || Quadrant_west_ep[i] == 4)? 1 : -1;
+          int sign_out_0_west_ep = (Quadrant_west_ep[i] == 1 || Quadrant_west_ep[i] == 2)? 1 : -1;
+
+          for(int j = 0; j < nn; j++){
+              if(i == j) continue;
+
+              int sign_in_1_rp = (Quadrant[j] == 1 || Quadrant[j] == 4)? 1 : -1;
+              int sign_out_1_rp = (Quadrant[j] == 1 || Quadrant[j] == 2)? 1 : -1;
+
+	      int sign_in_1_east_ep = (Quadrant_east_ep[i] == 1 || Quadrant_east_ep[i] == 4)? 1 : -1;
+	      int sign_out_1_east_ep = (Quadrant_east_ep[i] == 1 || Quadrant_east_ep[i] == 2)? 1 : -1;
+
+	      int sign_in_1_west_ep = (Quadrant_west_ep[i] == 1 || Quadrant_west_ep[i] == 4)? 1 : -1;
+	      int sign_out_1_west_ep = (Quadrant_west_ep[i] == 1 || Quadrant_west_ep[i] == 2)? 1 : -1;
+
+              if(Charge[i] == Charge[j]){
+		  double ss_in_rp = sign_in_0_rp * sign_in_1_rp;
+		  double ss_out_rp = sign_out_0_rp * sign_out_1_rp;
+
+		  double ss_in_east_ep = sign_in_0_east_ep * sign_in_1_east_ep;
+		  double ss_out_east_ep = sign_out_0_east_ep * sign_out_1_east_ep;
+
+		  double ss_in_west_ep = sign_in_0_west_ep * sign_in_1_west_ep;
+		  double ss_out_west_ep = sign_out_0_west_ep * sign_out_1_west_ep;
+
+		  hmsc_rp->Fill(1, ss_in_rp);
+		  hmsc_rp->Fill(2, ss_out_rp);
+
+                  hmsc_east_ep->Fill(1, ss_in_east_ep);
+                  hmsc_east_ep->Fill(2, ss_out_east_ep);
+
+                  hmsc_west_ep->Fill(1, ss_in_west_ep);
+                  hmsc_west_ep->Fill(2, ss_out_west_ep);
+              }
+              else{
+                  double os_in_rp = sign_in_0_rp * sign_in_1_rp;
+                  double os_out_rp = sign_out_0_rp * sign_out_1_rp;
+
+		  double os_in_east_ep = sign_in_0_east_ep * sign_in_1_east_ep;
+                  double os_out_east_ep = sign_out_0_east_ep * sign_out_1_east_ep;
+
+		  double os_in_west_ep = sign_in_0_west_ep * sign_in_1_west_ep;
+                  double os_out_west_ep = sign_out_0_west_ep * sign_out_1_west_ep;
+
+		  hmsc_rp->Fill(3, os_in_rp);
+		  hmsc_rp->Fill(4, os_out_rp);
+
+		  hmsc_east_ep->Fill(3, os_in_east_ep);
+		  hmsc_east_ep->Fill(4, os_out_east_ep);
+
+		  hmsc_west_ep->Fill(3, os_in_west_ep);
+		  hmsc_west_ep->Fill(4, os_out_west_ep);
+	      }
+	  }
+      }
+*/ 
       //==========================Angle difference between east and west for events with v2==0 ======
       if(fabs(v2ch_east_ep) < 1e-4)
 	  hanglediff_eastv2_westep->Fill(EP_east - EP_west); 
