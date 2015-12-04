@@ -184,7 +184,8 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
   TProfile* hmsc_east_ep = new TProfile("msc_east_ep", "msc_east_ep", 6, 0.5, 6.5);
 
 
-  TProfile* hfuqiang_delta_v2_east_rp = new TProfile("fuqiang_delta_v2_rp", "fuqiang_delta_v2_east_rp", 20, -0.2, 0.2);
+  TProfile* hfuqiang_delta_v2_east_rp = new TProfile("fuqiang_delta_v2_east_rp", "fuqiang_delta_v2_east_rp", 20, -0.2, 0.2);
+  TProfile* hfuqiang_delta_v2_rp = new TProfile("fuqiang_delta_v2_rp", "fuqiang_delta_v2_rp", 20, -0.2, 0.2);
   TProfile* hmsc_ss_v2_rp = new TProfile("msc_ss_v2_rp", "msc_ss_v2_rp", 20, -0.2, 0.2);
   TProfile* hmsc_os_v2_rp = new TProfile("msc_os_v2_rp", "msc_os_v2_rp", 20, -0.2, 0.2);
 
@@ -202,46 +203,49 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       hEP[i]=new TH1D(tmp,"",1000,-1*TMath::Pi(),TMath::Pi());
     }
 
-  TH1D* hv2ch[4];
-  TH1D* hDelta[4];
-  TH1D* hASqChPoUD[4];
-  TH1D* hASqChNeUD[4];
-  TH1D* hASqChPoLR[4];
-  TH1D* hASqChNeLR[4];
-  TH1D* hApAmChUD[4];
-  TH1D* hApAmChLR[4];
+  TH1D* hv2ch[5];
+  TH1D* hDelta[5];
+  TH1D* hASqChPoUD[5];
+  TH1D* hASqChNeUD[5];
+  TH1D* hASqChPoLR[5];
+  TH1D* hASqChNeLR[5];
+  TH1D* hApAmChUD[5];
+  TH1D* hApAmChLR[5];
 
-  TH1D* hASqChPoStUD[4];
-  TH1D* hASqChNeStUD[4];
-  TH1D* hASqChPoStLR[4];
-  TH1D* hASqChNeStLR[4];  
-  TH1D* hApAmChStUD[4];
-  TH1D* hApAmChStLR[4];
+  TH1D* hASqChPoStUD[5];
+  TH1D* hASqChNeStUD[5];
+  TH1D* hASqChPoStLR[5];
+  TH1D* hASqChNeStLR[5];  
+  TH1D* hApAmChStUD[5];
+  TH1D* hApAmChStLR[5];
 
-  TH2D* ChPlSqUD[4];
-  TH2D* ChPlSqStUD[4];
+  TH2D* ChPlSqUD[5];
+  TH2D* ChPlSqStUD[5];
 
-  TH2D* ChMiSqUD[4];
-  TH2D* ChMiSqStUD[4];
+  TH2D* ChMiSqUD[5];
+  TH2D* ChMiSqStUD[5];
   
-  TH2D* ChPlMiUD[4];
-  TH2D* ChPlMiStUD[4];
+  TH2D* ChPlMiUD[5];
+  TH2D* ChPlMiStUD[5];
 
-  TH2D* ChPlSqLR[4];
-  TH2D* ChPlSqStLR[4];
+  TH2D* ChPlSqLR[5];
+  TH2D* ChPlSqStLR[5];
 
-  TH2D* ChMiSqLR[4];
-  TH2D* ChMiSqStLR[4];
+  TH2D* ChMiSqLR[5];
+  TH2D* ChMiSqStLR[5];
   
-  TH2D* ChPlMiLR[4];
-  TH2D* ChPlMiStLR[4];
+  TH2D* ChPlMiLR[5];
+  TH2D* ChPlMiStLR[5];
 
 
+  TH1D* hanglediff_rpv2_rp = new TH1D("hanglediff_rpv2_rp", "angle diff rp v2 rp", 100, -3.1415926, 3.1415926);
+  TH1D* hangleeast_rpv2_rp = new TH1D("hangleeast_rpv2_rp", "angle east rp v2 rp", 100, -3.1415926, 3.1415926);
+  TH1D* hanglewest_rpv2_rp = new TH1D("hanglewest_rpv2_rp", "angle west rp v2 rp", 100, -3.1415926, 3.1415926);
   TH1D* hanglediff_eastv2_westep = new TH1D("hanglediff_0", "angle diff east v2 west ep", 100, -3.1415926, 3.1415926);
   TH1D* hanglediff_westv2_eastep = new TH1D("hanglediff_1", "angle diff west v2 east ep", 100, -3.1415926, 3.1415926);
   //*******0 east_rp****1 west_rp****2 east_ep****3 west_ep*******
 
-  for(Int_t i=0;i<4;i++)
+  for(Int_t i=0;i<5;i++)
     {
       
       sprintf(tmp,"v2ch_%d",i);
@@ -436,8 +440,18 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 
       //**********************RP************************
 
+      double *NumOfChPoUD_rp=new double[2]; 
+      double *NumOfChPoStUD_rp=new double[2];
+      double *NumOfChNeUD_rp=new double[2];
+      double *NumOfChNeStUD_rp=new double[2];
+      
+      double *NumOfChPoLR_rp=new double[2];
+      double *NumOfChPoStLR_rp=new double[2];
+      double *NumOfChNeLR_rp=new double[2];
+      double *NumOfChNeStLR_rp=new double[2];
+
       double *NumOfChPoUD_east_rp=new double[2]; //======Number of positively charged particles up-0 and down-1 in east sub-event========
-      double *NumOfChPoStUD_east_rp=new double[2]; //=======St??=======
+      double *NumOfChPoStUD_east_rp=new double[2]; //=======St -> Standard Background=======
       double *NumOfChNeUD_east_rp=new double[2];
       double *NumOfChNeStUD_east_rp=new double[2];
       
@@ -456,29 +470,46 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       double *NumOfChNeLR_west_rp=new double[2];
       double *NumOfChNeStLR_west_rp=new double[2];
 
-      double p_sumcos_east_rp,p_sumcos_west_rp; //======sum of positive particle cosine terms======
-      double p_sumsin_east_rp,p_sumsin_west_rp;
-      double n_sumcos_east_rp,n_sumcos_west_rp;
-      double n_sumsin_east_rp,n_sumsin_west_rp;
+      double p_sumcos_rp, p_sumcos_east_rp,p_sumcos_west_rp; //======sum of positive particle cosine terms======
+      double p_sumsin_rp, p_sumsin_east_rp,p_sumsin_west_rp;
+      double n_sumcos_rp, n_sumcos_east_rp,n_sumcos_west_rp;
+      double n_sumsin_rp, n_sumsin_east_rp,n_sumsin_west_rp;
       
-      double p_sumcos2_east_rp,p_sumcos2_west_rp;
-      double p_sumsin2_east_rp,p_sumsin2_west_rp;
-      double n_sumcos2_east_rp,n_sumcos2_west_rp;
-      double n_sumsin2_east_rp,n_sumsin2_west_rp;
+      double p_sumcos2_rp, p_sumcos2_east_rp,p_sumcos2_west_rp;
+      double p_sumsin2_rp, p_sumsin2_east_rp,p_sumsin2_west_rp;
+      double n_sumcos2_rp, n_sumcos2_east_rp,n_sumcos2_west_rp;
+      double n_sumsin2_rp, n_sumsin2_east_rp,n_sumsin2_west_rp;
 
-      Double_t p_v2sum_east_rp=0,p_v2sum_west_rp=0;
-      Double_t n_v2sum_east_rp=0,n_v2sum_west_rp=0;      
+      Double_t p_v2sum_rp = 0; 
+      Double_t p_v2sum_east_rp=0;
+      Double_t p_v2sum_west_rp=0;
+      Double_t n_v2sum_rp = 0; 
+      Double_t n_v2sum_east_rp=0;
+      Double_t n_v2sum_west_rp=0;      
 
+      p_sumcos_rp = 0; p_sumsin_rp = 0;
       p_sumcos_east_rp=0;p_sumcos_west_rp=0;
       p_sumsin_east_rp=0;p_sumsin_west_rp=0;
+      n_sumcos_rp = 0; n_sumsin_rp = 0;
       n_sumcos_east_rp=0;n_sumcos_west_rp=0;
       n_sumsin_east_rp=0;n_sumsin_west_rp=0;
       
+      p_sumcos2_rp = 0; p_sumsin2_rp = 0;
       p_sumcos2_east_rp=0;p_sumcos2_west_rp=0;
       p_sumsin2_east_rp=0;p_sumsin2_west_rp=0;
+      n_sumcos2_rp = 0; n_sumsin2_rp = 0;
       n_sumcos2_east_rp=0;n_sumcos2_west_rp=0;
       n_sumsin2_east_rp=0;n_sumsin2_west_rp=0;
 
+      NumOfChPoUD_rp[0]=NumOfChPoUD_rp[1]=0;
+      NumOfChPoStUD_rp[0]=NumOfChPoStUD_rp[1]=0;
+      NumOfChNeUD_rp[0]=NumOfChNeUD_rp[1]=0;
+      NumOfChNeStUD_rp[0]=NumOfChNeStUD_rp[1]=0;
+      
+      NumOfChPoLR_rp[0]=NumOfChPoLR_rp[1]=0;
+      NumOfChPoStLR_rp[0]=NumOfChPoStLR_rp[1]=0;
+      NumOfChNeLR_rp[0]=NumOfChNeLR_rp[1]=0;
+      NumOfChNeStLR_rp[0]=NumOfChNeStLR_rp[1]=0;
 
       NumOfChPoUD_east_rp[0]=NumOfChPoUD_east_rp[1]=0;
       NumOfChPoStUD_east_rp[0]=NumOfChPoStUD_east_rp[1]=0;
@@ -614,9 +645,9 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		    case 2: 
 		      NumOfChPoStUD_east_rp[0]++;NumOfChPoStUD_rp[0]++;NumOfChPoStLR_east_rp[0]++;NumOfChPoStLR_rp[0]++;break;
 		    case 3:
-		      NumOfChPoStUD_east_rp[1]++;NumOfChPoStLR_east_rp[0]++;break;
+		      NumOfChPoStUD_east_rp[1]++;NumOfChPoStUD_rp[1]++;NumOfChPoStLR_east_rp[0]++;NumOfChPoStLR_rp[0]++;break;
 		    case 4:
-		      NumOfChPoStUD_east_rp[1]++;NumOfChPoStLR_east_rp[1]++;break;
+		      NumOfChPoStUD_east_rp[1]++;NumOfChPoStUD_rp[1]++;NumOfChPoStLR_east_rp[1]++;NumOfChPoStLR_rp[1]++;break;
 		    }
 
 		  p_sumcos_east_rp+=cos(Phi[i]);
@@ -625,6 +656,11 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  p_sumsin2_east_rp+=sin(Phi[i])*sin(Phi[i]);
 		  p_v2sum_east_rp+=cos(2*Phi[i]);
 
+		  p_sumcos_rp+=cos(Phi[i]);
+		  p_sumsin_rp+=sin(Phi[i]);
+		  p_sumcos2_rp+=cos(Phi[i])*cos(Phi[i]);
+		  p_sumsin2_rp+=sin(Phi[i])*sin(Phi[i]);
+		  p_v2sum_rp+=cos(2*Phi[i]);
 		  //**********************EP******************************
 
 		  switch (Phi_bin(cycle(Phi[i]-EP_west)))
@@ -674,25 +710,25 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  switch (Phi_bin(Phi[i]))
 		    {
 		    case 1: 
-		      NumOfChNeUD_east_rp[0]++;NumOfChNeLR_east_rp[1]++;break;
+		      NumOfChNeUD_east_rp[0]++;NumOfChNeUD_rp[0]++;NumOfChNeLR_east_rp[1]++;NumOfChNeLR_rp[1]++;break;
 		    case 2: 
-		      NumOfChNeUD_east_rp[0]++;NumOfChNeLR_east_rp[0]++;break;
+		      NumOfChNeUD_east_rp[0]++;NumOfChNeUD_rp[0]++;NumOfChNeLR_east_rp[0]++;NumOfChNeLR_rp[0]++;break;
 		    case 3:
-		      NumOfChNeUD_east_rp[1]++;NumOfChNeLR_east_rp[0]++;break;
+		      NumOfChNeUD_east_rp[1]++;NumOfChNeUD_rp[1]++;NumOfChNeLR_east_rp[0]++;NumOfChNeLR_rp[0]++;break;
 		    case 4:
-		      NumOfChNeUD_east_rp[1]++;NumOfChNeLR_east_rp[1]++;break;
+		      NumOfChNeUD_east_rp[1]++;NumOfChNeUD_rp[1]++;NumOfChNeLR_east_rp[1]++;NumOfChNeLR_rp[1]++;break;
 		    }
 
 		  switch (Phi_bin(RoPhi(Phi[i])))
 		    {
 		    case 1: 
-		      NumOfChNeStUD_east_rp[0]++;NumOfChNeStLR_east_rp[1]++;break;
+		      NumOfChNeStUD_east_rp[0]++;NumOfChNeStUD_rp[0]++;NumOfChNeStLR_east_rp[1]++;NumOfChNeStLR_rp[1]++;break;
 		    case 2: 
-		      NumOfChNeStUD_east_rp[0]++;NumOfChNeStLR_east_rp[0]++;break;
+		      NumOfChNeStUD_east_rp[0]++;NumOfChNeStUD_rp[0]++;NumOfChNeStLR_east_rp[0]++;NumOfChNeStLR_rp[0]++;break;
 		    case 3:
-		      NumOfChNeStUD_east_rp[1]++;NumOfChNeStLR_east_rp[0]++;break;
+		      NumOfChNeStUD_east_rp[1]++;NumOfChNeStUD_rp[1]++;NumOfChNeStLR_east_rp[0]++;NumOfChNeStLR_rp[0]++;break;
 		    case 4:
-		      NumOfChNeStUD_east_rp[1]++;NumOfChNeStLR_east_rp[1]++;break;
+		      NumOfChNeStUD_east_rp[1]++;NumOfChNeStUD_rp[1]++;NumOfChNeStLR_east_rp[1]++;NumOfChNeStLR_rp[1]++;break;
 		    }
 
 		  n_sumcos_east_rp+=cos(Phi[i]);
@@ -701,6 +737,11 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  n_sumsin2_east_rp+=sin(Phi[i])*sin(Phi[i]);
 		  n_v2sum_east_rp+=cos(2*Phi[i]);		
 
+		  n_sumcos_rp+=cos(Phi[i]);
+		  n_sumsin_rp+=sin(Phi[i]);
+		  n_sumcos2_rp+=cos(Phi[i])*cos(Phi[i]);
+		  n_sumsin2_rp+=sin(Phi[i])*sin(Phi[i]);
+		  n_v2sum_rp+=cos(2*Phi[i]);		
 		  //**********************EP******************************
 
 		  switch (Phi_bin(cycle(Phi[i]-EP_west)))
@@ -754,25 +795,25 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  switch (Phi_bin(Phi[i]))
 		    {
 		    case 1: 
-		      NumOfChPoUD_west_rp[0]++;NumOfChPoLR_west_rp[1]++;break;
+		      NumOfChPoUD_west_rp[0]++;NumOfChPoUD_rp[0]++;NumOfChPoLR_west_rp[1]++;NumOfChPoLR_rp[1]++;break;
 		    case 2: 
-		      NumOfChPoUD_west_rp[0]++;NumOfChPoLR_west_rp[0]++;break;
+		      NumOfChPoUD_west_rp[0]++;NumOfChPoUD_rp[0]++;NumOfChPoLR_west_rp[0]++;NumOfChPoLR_rp[0]++;break;
 		    case 3:
-		      NumOfChPoUD_west_rp[1]++;NumOfChPoLR_west_rp[0]++;break;
+		      NumOfChPoUD_west_rp[1]++;NumOfChPoUD_rp[1]++;NumOfChPoLR_west_rp[0]++;NumOfChPoLR_rp[0]++;break;
 		    case 4:
-		      NumOfChPoUD_west_rp[1]++;NumOfChPoLR_west_rp[1]++;break;
+		      NumOfChPoUD_west_rp[1]++;NumOfChPoUD_rp[1]++;NumOfChPoLR_west_rp[1]++;NumOfChPoLR_rp[1]++;break;
 		    }
 
 		  switch (Phi_bin(RoPhi(Phi[i])))
 		    {
 		    case 1: 
-		      NumOfChPoStUD_west_rp[0]++;NumOfChPoStLR_west_rp[1]++;break;
+		      NumOfChPoStUD_west_rp[0]++;NumOfChPoStUD_rp[0]++;NumOfChPoStLR_west_rp[1]++;NumOfChPoStLR_rp[1]++;break;
 		    case 2: 
-		      NumOfChPoStUD_west_rp[0]++;NumOfChPoStLR_west_rp[0]++;break;
+		      NumOfChPoStUD_west_rp[0]++;NumOfChPoStUD_rp[0]++;NumOfChPoStLR_west_rp[0]++;NumOfChPoStLR_rp[0]++;break;
 		    case 3:
-		      NumOfChPoStUD_west_rp[1]++;NumOfChPoStLR_west_rp[0]++;break;
+		      NumOfChPoStUD_west_rp[1]++;NumOfChPoStUD_rp[1]++;NumOfChPoStLR_west_rp[0]++;NumOfChPoStLR_rp[0]++;break;
 		    case 4:
-		      NumOfChPoStUD_west_rp[1]++;NumOfChPoStLR_west_rp[1]++;break;
+		      NumOfChPoStUD_west_rp[1]++;NumOfChPoStUD_rp[1]++;NumOfChPoStLR_west_rp[1]++;NumOfChPoStLR_rp[1]++;break;
 		    }
 		  
 		  p_sumcos_west_rp+=cos(Phi[i]);		 
@@ -781,6 +822,11 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  p_sumsin2_west_rp+=sin(Phi[i])*sin(Phi[i]);
 		  p_v2sum_west_rp+=cos(2*Phi[i]);		 
 
+		  p_sumcos_rp+=cos(Phi[i]);		 
+		  p_sumsin_rp+=sin(Phi[i]);
+		  p_sumcos2_rp+=cos(Phi[i])*cos(Phi[i]);
+		  p_sumsin2_rp+=sin(Phi[i])*sin(Phi[i]);
+		  p_v2sum_rp+=cos(2*Phi[i]);		 
 		  //**********************EP******************************
 
 		  switch (Phi_bin(cycle(Phi[i]-EP_east)))
@@ -813,6 +859,7 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  p_sumsin2_west_ep+=sin(Phi[i]-EP_east)*sin(Phi[i]-EP_east);
 		  p_v2sum_west_ep+=cos(2*(Phi[i]-EP_east));
 
+
 		  //*************************Full EP*****************************
 
 		  p_sumcos_ep+=cos(Phi[i]-EP_full);
@@ -831,25 +878,25 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  switch (Phi_bin(Phi[i]))
 		    {
 		    case 1: 
-		      NumOfChNeUD_west_rp[0]++;NumOfChNeLR_west_rp[1]++;break;
+		      NumOfChNeUD_west_rp[0]++;NumOfChNeUD_rp[0]++;NumOfChNeLR_west_rp[1]++;NumOfChNeLR_rp[1]++;break;
 		    case 2: 
-		      NumOfChNeUD_west_rp[0]++;NumOfChNeLR_west_rp[0]++;break;
+		      NumOfChNeUD_west_rp[0]++;NumOfChNeUD_rp[0]++;NumOfChNeLR_west_rp[0]++;NumOfChNeLR_rp[0]++;break;
 		    case 3:
-		      NumOfChNeUD_west_rp[1]++;NumOfChNeLR_west_rp[0]++;break;
+		      NumOfChNeUD_west_rp[1]++;NumOfChNeUD_rp[1]++;NumOfChNeLR_west_rp[0]++;NumOfChNeLR_rp[0]++;break;
 		    case 4:
-		      NumOfChNeUD_west_rp[1]++;NumOfChNeLR_west_rp[1]++;break;
+		      NumOfChNeUD_west_rp[1]++;NumOfChNeUD_rp[1]++;NumOfChNeLR_west_rp[1]++;NumOfChNeLR_rp[1]++;break;
 		    }
 
 		  switch (Phi_bin(RoPhi(Phi[i])))
 		    {
 		    case 1: 
-		      NumOfChNeStUD_west_rp[0]++;NumOfChNeStLR_west_rp[1]++;break;
+		      NumOfChNeStUD_west_rp[0]++;NumOfChNeStUD_rp[0]++;NumOfChNeStLR_west_rp[1]++;NumOfChNeStLR_rp[1]++;break;
 		    case 2: 
-		      NumOfChNeStUD_west_rp[0]++;NumOfChNeStLR_west_rp[0]++;break;
+		      NumOfChNeStUD_west_rp[0]++;NumOfChNeStUD_rp[0]++;NumOfChNeStLR_west_rp[0]++;NumOfChNeStLR_rp[0]++;break;
 		    case 3:
-		      NumOfChNeStUD_west_rp[1]++;NumOfChNeStLR_west_rp[0]++;break;
+		      NumOfChNeStUD_west_rp[1]++;NumOfChNeStUD_rp[1]++;NumOfChNeStLR_west_rp[0]++;NumOfChNeStLR_rp[0]++;break;
 		    case 4:
-		      NumOfChNeStUD_west_rp[1]++;NumOfChNeStLR_west_rp[1]++;break;
+		      NumOfChNeStUD_west_rp[1]++;NumOfChNeStUD_rp[1]++;NumOfChNeStLR_west_rp[1]++;NumOfChNeStLR_rp[1]++;break;
 		    }
 
 		  n_sumcos_west_rp+=cos(Phi[i]);
@@ -858,6 +905,11 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  n_sumsin2_west_rp+=sin(Phi[i])*sin(Phi[i]);
 		  n_v2sum_west_rp+=cos(2*Phi[i]);
 		 
+		  n_sumcos_rp+=cos(Phi[i]);
+		  n_sumsin_rp+=sin(Phi[i]);
+		  n_sumcos2_rp+=cos(Phi[i])*cos(Phi[i]);
+		  n_sumsin2_rp+=sin(Phi[i])*sin(Phi[i]);
+		  n_v2sum_rp+=cos(2*Phi[i]);
 		  //**********************EP******************************
 
 		  switch (Phi_bin(cycle(Phi[i]-EP_east)))
@@ -931,7 +983,7 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       double ASqChPoLR_west_rp,ASqChNeLR_west_rp;
       double ApAmChLR_west_rp;
 
-
+      //========Background===================== 
       double AChPoStUD_rp, AChNeStUD_rp;
       double ASqChPoStUD_rp, ASqChNeStUD_rp;
       double ApAmChStUD_rp;
@@ -968,6 +1020,70 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       hv2[0]->Fill(v2full_rp);
 
 
+//*************************************************************
+      int iflag0 = 1;
+
+      if((AChPoUD_rp=CalA(NumOfChPoUD_rp))>0.8) {iflag0=0;}
+      if((AChPoStUD_rp=CalA(NumOfChPoStUD_rp))>0.8) {iflag0=0;}
+      if((AChNeUD_rp=CalA(NumOfChNeUD_rp))>0.8) {iflag0=0;}
+      if((AChNeStUD_rp=CalA(NumOfChNeStUD_rp))>0.8) {iflag0=0;}
+	 
+      if((AChPoLR_rp=CalA(NumOfChPoLR_rp))>0.8) {iflag0=0;}
+      if((AChPoStLR_rp=CalA(NumOfChPoStLR_rp))>0.8) {iflag0=0;}
+      if((AChNeLR_rp=CalA(NumOfChNeLR_rp))>0.8) {iflag0=0;}
+      if((AChNeStLR_rp=CalA(NumOfChNeStLR_rp))>0.8) {iflag0=0;}
+
+      if(iflag0==1)
+	{
+	  ASqChPoUD_rp=pow(AChPoUD_rp,2);ASqChPoStUD_rp=pow(AChPoStUD_rp,2);
+	  ASqChNeUD_rp=pow(AChNeUD_rp,2);ASqChNeStUD_rp=pow(AChNeStUD_rp,2);
+	  ApAmChUD_rp=AChPoUD_rp*AChNeUD_rp;ApAmChStUD_rp=AChPoStUD_rp*AChNeStUD_rp;
+	  	  
+	  ASqChPoLR_rp=pow(AChPoLR_rp,2);ASqChPoStLR_rp=pow(AChPoStLR_rp,2);
+	  ASqChNeLR_rp=pow(AChNeLR_rp,2);ASqChNeStLR_rp=pow(AChNeStLR_rp,2);
+	  ApAmChLR_rp=AChPoLR_rp*AChNeLR_rp;ApAmChStLR_rp=AChPoStLR_rp*AChNeStLR_rp;
+	     
+	  Double_t delta_rp=(ASqChPoUD_rp-ASqChPoStUD_rp+ASqChNeUD_rp-ASqChNeStUD_rp)/2-(ASqChPoLR_rp-ASqChPoStLR_rp+ASqChNeLR_rp-ASqChNeStLR_rp)/2-(ApAmChUD_rp-ApAmChStUD_rp-ApAmChLR_rp+ApAmChStLR_rp);
+
+	  hDelta[4]->Fill(delta_rp);	     // TODO
+
+	  hASqChPoUD[4]->Fill(ASqChPoUD_rp);
+	  hASqChNeUD[4]->Fill(ASqChNeUD_rp);
+	  hASqChPoLR[4]->Fill(ASqChPoLR_rp);
+	  hASqChNeLR[4]->Fill(ASqChNeLR_rp);
+	  hApAmChUD[4]->Fill(ApAmChUD_rp);
+	  hApAmChLR[4]->Fill(ApAmChLR_rp);
+	  
+	  hASqChPoStUD[4]->Fill(ASqChPoStUD_rp);
+	  hASqChNeStUD[4]->Fill(ASqChNeStUD_rp);
+	  hASqChPoStLR[4]->Fill(ASqChPoStLR_rp);
+	  hASqChNeStLR[4]->Fill(ASqChNeStLR_rp);
+	  hApAmChStUD[4]->Fill(ApAmChStUD_rp);
+	  hApAmChStLR[4]->Fill(ApAmChStLR_rp);
+	     
+	  ChPlSqUD[4]->Fill(v2full_rp,ASqChPoUD_rp);
+	  ChPlSqStUD[4]->Fill(v2full_rp,ASqChPoStUD_rp);
+	     
+	  ChMiSqUD[4]->Fill(v2full_rp,ASqChNeUD_rp);
+	  ChMiSqStUD[4]->Fill(v2full_rp,ASqChNeStUD_rp);
+	     
+	  ChPlMiUD[4]->Fill(v2full_rp,ApAmChUD_rp);
+	  ChPlMiStUD[4]->Fill(v2full_rp,ApAmChStUD_rp);
+	     
+	  ChPlSqLR[4]->Fill(v2full_rp,ASqChPoLR_rp);
+	  ChPlSqStLR[4]->Fill(v2full_rp,ASqChPoStLR_rp);
+	     
+	  ChMiSqLR[4]->Fill(v2full_rp,ASqChNeLR_rp);
+	  ChMiSqStLR[4]->Fill(v2full_rp,ASqChNeStLR_rp);
+	  
+	  ChPlMiLR[4]->Fill(v2full_rp,ApAmChLR_rp);
+	  ChPlMiStLR[4]->Fill(v2full_rp,ApAmChStLR_rp);	    			  
+
+          //========Check delta vs. v2 in input==================
+          hfuqiang_delta_v2_rp->Fill(v2full_rp, delta_rp);
+	}
+
+
 //**************************************************************
       int iflag1=1;
       
@@ -981,10 +1097,6 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       if((AChPoStLR_east_rp=CalA(NumOfChPoStLR_east_rp))>0.8) {iflag1=0;}
       if((AChNeLR_east_rp=CalA(NumOfChNeLR_east_rp))>0.8) {iflag1=0;}
       if((AChNeStLR_east_rp=CalA(NumOfChNeStLR_east_rp))>0.8) {iflag1=0;}
-
-      AChPoUD_rp = CalA(NumOfChPoUD_east_rp + NumOfChPoUD_east_rp);
-      
-
 
       if(iflag1==1)
 	{
@@ -1403,13 +1515,16 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       }
 */ 
       //==========================Angle difference between east and west for events with v2==0 ======
+      if(fabs(v2full_rp) < 1e-4){
+          hanglediff_rpv2_rp->Fill(EP_east - EP_west);
+          hangleeast_rpv2_rp->Fill(EP_east);
+          hanglewest_rpv2_rp->Fill(EP_west);
+      }
       if(fabs(v2ch_east_ep) < 1e-4)
 	  hanglediff_eastv2_westep->Fill(EP_east - EP_west); 
       else if(fabs(v2ch_west_ep) < 1e-4)
 	  hanglediff_westv2_eastep->Fill(EP_east - EP_west); 
  
-
-
       int iflag3=1;
       
       if((AChPoUD_east_ep=CalA(NumOfChPoUD_east_ep))>0.8) {iflag3=0;}
