@@ -125,10 +125,10 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 
   char tmp[128];
 
-  TH1D* hphi_p_east = new TH1D("phi_p_east","",100,-1,7); 
-  TH1D* hphi_n_east = new TH1D("phi_n_east","",100,-1,7); 
-  TH1D* hphi_p_west = new TH1D("phi_p_west","",100,-1,7); 
-  TH1D* hphi_n_west = new TH1D("phi_n_west","",100,-1,7); 
+  TH1D* hphi_p_east = new TH1D("phi_p_east","",100,-1,7);
+  TH1D* hphi_n_east = new TH1D("phi_n_east","",100,-1,7);
+  TH1D* hphi_p_west = new TH1D("phi_p_west","",100,-1,7);
+  TH1D* hphi_n_west = new TH1D("phi_n_west","",100,-1,7);
  
   //*********************0 RP****1 EP************************
 
@@ -137,7 +137,7 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
   TH1D* hpn_east[2];
 
   TH1D* hpp_west[2];
-  TH1D* hnn_west[2]; 
+  TH1D* hnn_west[2];
   TH1D* hpn_west[2];
 
   TH1D* hpp[2];
@@ -174,14 +174,20 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       sprintf(tmp,"v2_full_%d",i);
       hv2[i]= new TH1D(tmp,"",1000,-1,1);
     }
-
   
-  TH1D* hRes = new TH1D("Res","",200,-1,1);
+  TH1D* hRes = new TH1D("Res", "", 200, -1, 1);
 
   TH1D* hEP[3];
   //===========hmsc========
+  TProfile* hmsc_rp = new TProfile("msc_rp", "msc_rp", 6, 0.5, 6.5);
   TProfile* hmsc_west_ep = new TProfile("msc_west_ep", "msc_west_ep", 6, 0.5, 6.5);
   TProfile* hmsc_east_ep = new TProfile("msc_east_ep", "msc_east_ep", 6, 0.5, 6.5);
+
+
+  TProfile* hfuqiang_delta_v2_east_rp = new TProfile("fuqiang_delta_v2_rp", "fuqiang_delta_v2_east_rp", 20, -0.2, 0.2);
+  TProfile* hmsc_ss_v2_rp = new TProfile("msc_ss_v2_rp", "msc_ss_v2_rp", 20, -0.2, 0.2);
+  TProfile* hmsc_os_v2_rp = new TProfile("msc_os_v2_rp", "msc_os_v2_rp", 20, -0.2, 0.2);
+
 
   TProfile* hmsc_ss_v2_west_ep = new TProfile("msc_ss_v2_west_ep", "msc_ss_v2_west_ep", 20, -0.2, 0.2);
   TProfile* hmsc_os_v2_west_ep = new TProfile("msc_os_v2_west_ep", "msc_os_v2_west_ep", 20, -0.2, 0.2);
@@ -198,9 +204,9 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 
   TH1D* hv2ch[4];
   TH1D* hDelta[4];
-  TH1D* hASqChPoUD[4]; 
+  TH1D* hASqChPoUD[4];
   TH1D* hASqChNeUD[4];
-  TH1D* hASqChPoLR[4]; 
+  TH1D* hASqChPoLR[4];
   TH1D* hASqChNeLR[4];
   TH1D* hApAmChUD[4];
   TH1D* hApAmChLR[4];
@@ -592,21 +598,21 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  switch (Phi_bin(Phi[i]))
 		    {
 		    case 1: 
-		      NumOfChPoUD_east_rp[0]++;NumOfChPoLR_east_rp[1]++;break;
+		      NumOfChPoUD_east_rp[0]++;NumOfChPoUD_rp[0]++;NumOfChPoLR_east_rp[1]++;NumOfChPoLR_rp[1]++;break;
 		    case 2: 
-		      NumOfChPoUD_east_rp[0]++;NumOfChPoLR_east_rp[0]++;break;
+		      NumOfChPoUD_east_rp[0]++;NumOfChPoUD_rp[0]++;NumOfChPoLR_east_rp[0]++;NumOfChPoLR_rp[0]++;break;
 		    case 3:
-		      NumOfChPoUD_east_rp[1]++;NumOfChPoLR_east_rp[0]++;break;
+		      NumOfChPoUD_east_rp[1]++;NumOfChPoUD_rp[1]++;NumOfChPoLR_east_rp[0]++;NumOfChPoLR_rp[0]++;break;
 		    case 4:
-		      NumOfChPoUD_east_rp[1]++;NumOfChPoLR_east_rp[1]++;break;
+		      NumOfChPoUD_east_rp[1]++;NumOfChPoUD_rp[1]++;NumOfChPoLR_east_rp[1]++;NumOfChPoLR_rp[1]++;break;
 		    }
 
 		  switch (Phi_bin(RoPhi(Phi[i])))
 		    {
 		    case 1: 
-		      NumOfChPoStUD_east_rp[0]++;NumOfChPoStLR_east_rp[1]++;break;
+		      NumOfChPoStUD_east_rp[0]++;NumOfChPoStUD_rp[0]++;NumOfChPoStLR_east_rp[1]++;NumOfChPoStLR_rp[1]++;break;
 		    case 2: 
-		      NumOfChPoStUD_east_rp[0]++;NumOfChPoStLR_east_rp[0]++;break;
+		      NumOfChPoStUD_east_rp[0]++;NumOfChPoStUD_rp[0]++;NumOfChPoStLR_east_rp[0]++;NumOfChPoStLR_rp[0]++;break;
 		    case 3:
 		      NumOfChPoStUD_east_rp[1]++;NumOfChPoStLR_east_rp[0]++;break;
 		    case 4:
@@ -618,7 +624,7 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 		  p_sumcos2_east_rp+=cos(Phi[i])*cos(Phi[i]);
 		  p_sumsin2_east_rp+=sin(Phi[i])*sin(Phi[i]);
 		  p_v2sum_east_rp+=cos(2*Phi[i]);
-			  
+
 		  //**********************EP******************************
 
 		  switch (Phi_bin(cycle(Phi[i]-EP_west)))
@@ -901,6 +907,13 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       //****************************calculation*********************************
 
       //**********************************RP************************************
+      double AChPoUD_rp, AChNeUD_rp;
+      double ASqChPoUD_rp, ASqChNeUD_rp;
+      double ApAmChUD_rp;
+      
+      double AChPoLR_rp, AChNeLR_rp;
+      double ASqChPoLR_rp, ASqChNeLR_rp;
+      double ApAmChLR_rp;
 
       double AChPoUD_east_rp,AChNeUD_east_rp;
       double ASqChPoUD_east_rp,ASqChNeUD_east_rp;
@@ -917,6 +930,15 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       double AChPoLR_west_rp,AChNeLR_west_rp;
       double ASqChPoLR_west_rp,ASqChNeLR_west_rp;
       double ApAmChLR_west_rp;
+
+
+      double AChPoStUD_rp, AChNeStUD_rp;
+      double ASqChPoStUD_rp, ASqChNeStUD_rp;
+      double ApAmChStUD_rp;
+      
+      double AChPoStLR_rp,AChNeStLR_rp;
+      double ASqChPoStLR_rp,ASqChNeStLR_rp;
+      double ApAmChStLR_rp;
 
       double AChPoStUD_east_rp,AChNeStUD_east_rp;
       double ASqChPoStUD_east_rp,ASqChNeStUD_east_rp;
@@ -959,6 +981,9 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
       if((AChPoStLR_east_rp=CalA(NumOfChPoStLR_east_rp))>0.8) {iflag1=0;}
       if((AChNeLR_east_rp=CalA(NumOfChNeLR_east_rp))>0.8) {iflag1=0;}
       if((AChNeStLR_east_rp=CalA(NumOfChNeStLR_east_rp))>0.8) {iflag1=0;}
+
+      AChPoUD_rp = CalA(NumOfChPoUD_east_rp + NumOfChPoUD_east_rp);
+      
 
 
       if(iflag1==1)
@@ -1006,6 +1031,10 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 	  
 	  ChPlMiLR[0]->Fill(v2ch_east_rp,ApAmChLR_east_rp);
 	  ChPlMiStLR[0]->Fill(v2ch_east_rp,ApAmChStLR_east_rp);	    			  
+
+          //========Check delta vs. v2 in input==================
+
+          hfuqiang_delta_v2_east_rp->Fill(v2ch_east_rp, delta_east_rp);
 	}
 
       int iflag2=1;
@@ -1170,6 +1199,51 @@ int simulation_v2(int argc=0, int eventsnum = 100000)
 
       assert(Quadrant_west_ep.size() == Quadrant_east_ep.size());
       assert(Charge_wrt_west_ep.size() == Charge_wrt_east_ep.size());
+
+      //===============Input Comparison========================================
+      int npairs_ss_rp = 0;
+      int npairs_os_rp = 0;
+      double ss_in_rp = 0;
+      double ss_out_rp = 0;
+      double os_in_rp = 0;
+      double os_out_rp = 0;
+      for(int i = 0; i < nn; i++){
+	  int sign_in_0_rp = (Quadrant[i] == 1 || Quadrant[i] == 4)? 1 : -1;
+          int sign_out_0_rp = (Quadrant[i] == 1 || Quadrant[i] == 2)? 1 : -1;
+    
+          for(int j = 0; j < nn; j++){
+	      if(i == j) continue;
+
+	      int sign_in_1_rp = (Quadrant[j] == 1 || Quadrant[j] == 4)? 1 : -1;
+	      int sign_out_1_rp = (Quadrant[j] == 1 || Quadrant[j] == 2)? 1 : -1;
+
+              if(Charge[i] == Charge[j]){
+                  npairs_ss_rp++;
+                  ss_in_rp += sign_in_0_rp * sign_in_1_rp;
+                  ss_out_rp += sign_out_0_rp * sign_out_1_rp;
+	      }
+              else{
+                  npairs_os_rp++;
+                  os_in_rp += sign_in_0_rp * sign_in_1_rp;
+                  os_out_rp += sign_out_0_rp * sign_out_1_rp;
+	      }
+	  }
+      }
+
+      ss_in_rp /= npairs_ss_rp;
+      ss_out_rp /= npairs_ss_rp;
+      os_in_rp /= npairs_os_rp;
+      os_out_rp /= npairs_os_rp;
+
+      hmsc_rp->Fill(1, coefficient * ss_in_rp);
+      hmsc_rp->Fill(2, coefficient * ss_out_rp);
+      hmsc_rp->Fill(3, coefficient * os_in_rp);
+      hmsc_rp->Fill(4, coefficient * os_out_rp);
+      hmsc_rp->Fill(5, coefficient * (ss_in_rp - ss_out_rp));
+      hmsc_rp->Fill(6, coefficient * (os_in_rp - os_out_rp));
+
+      hmsc_ss_v2_rp->Fill(v2full_rp, coefficient * (ss_in_rp - ss_out_rp));
+      hmsc_os_v2_rp->Fill(v2full_rp, coefficient * (os_in_rp - os_out_rp));
 
       //===============Compute the MSC Correlator==============================
       int npairs_ss_west_ep = 0;
