@@ -1,4 +1,8 @@
 {
     gROOT->LoadMacro("simulation_v2.C++");
-    simulation_v2(4, 200000);
+    int i = 600;
+    while(i > 0){
+        simulation_v2(1208, i, 200000);
+        i -= 50;
+    }
 }

@@ -113,15 +113,15 @@ Double_t CalA(Double_t* Num)
 int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 {
 
+    std::cout << "==============" << particlenum << " particles/event starts===============" << std::endl;
     Double_t v2=0.05;
     Double_t a=0.02;
 
     //***********************************************************
     char filename[50]; 
-    sprintf(filename,"./root/simulation_%d.root", argc);
+    sprintf(filename,"./root/simulation_%d_%d.root", argc, particlenum);
 
     TFile* f = new TFile(filename, "Recreate");
-
 
     char tmp[128];
 
@@ -201,12 +201,15 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 
     TProfile* hgamma_ss_v2_rp = new TProfile("gamma_ss_v2_rp", "gamma_ss_v2_rp", 20, -0.2, 0.2);
     TProfile* hgamma_os_v2_rp = new TProfile("gamma_os_v2_rp", "gamma_os_v2_rp", 20, -0.2, 0.2);
+    TProfile* hgamma_v2_rp = new TProfile("gamma_v2_rp", "gamma_v2_rp", 20, -0.2, 0.2);
 
     TProfile* hgamma_ss_v2_west_ep = new TProfile("gamma_ss_v2_west_ep", "gamma_ss_v2_west_ep", 20, -0.2, 0.2);
     TProfile* hgamma_os_v2_west_ep = new TProfile("gamma_os_v2_west_ep", "gamma_os_v2_west_ep", 20, -0.2, 0.2);
+    TProfile* hgamma_v2_west_ep = new TProfile("gamma_v2_west_ep", "gamma_v2_west_ep", 20, -0.2, 0.2);
 
     TProfile* hgamma_ss_v2_east_ep = new TProfile("gamma_ss_v2_east_ep", "gamma_ss_v2_east_ep", 20, -0.2, 0.2);
     TProfile* hgamma_os_v2_east_ep = new TProfile("gamma_os_v2_east_ep", "gamma_os_v2_east_ep", 20, -0.2, 0.2);
+    TProfile* hgamma_v2_east_ep = new TProfile("gamma_v2_east_ep", "gamma_v2_east_ep", 20, -0.2, 0.2);
 
     //******************0 east****1 west****2 full******************
     for(Int_t i=0;i<3;i++){
@@ -1315,14 +1318,7 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
         double gamma_coscos_os_rp = 0;
         double gamma_sinsin_os_rp = 0;
 
-        double gamma_ss_east_ep = 0;
-        double gamma_coscos_ss_east_ep = 0;
-        double gamma_sinsin_ss_east_ep = 0;
-        double gamma_os_east_ep = 0;
-        double gamma_coscos_os_east_ep = 0;
-        double gamma_sinsin_os_east_ep = 0;
-
-        for(int i = 0; i < nn; i++){
+	for(int i = 0; i < nn; i++){
             for(int j = 0; j < nn; j++){
                 if(i == j) continue; 
                 if(Charge[i] == Charge[j]){
@@ -1349,14 +1345,17 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
         gamma_coscos_os_rp /= npairs_gamma_os_rp;
         gamma_sinsin_os_rp /= npairs_gamma_os_rp;
     
-        hgamma_rp->Fill(1, gamma_coscos_ss);
-        hgamma_rp->Fill(2, gamma_sinsin_ss);
-        hgamma_rp->Fill(3, gamma_coscos_os);
-        hgamma_rp->Fill(4, gamma_sinsin_os);
-        hgamma_rp->Fill(5, gamma_coscos_ss - gamma_sinsin_ss);
-        hgamma_rp->Fill(6, gamma_coscos_os - gamma_sinsin_os);
+        hgamma_rp->Fill(1, gamma_coscos_ss_rp);
+        hgamma_rp->Fill(2, gamma_sinsin_ss_rp);
+        hgamma_rp->Fill(3, gamma_coscos_os_rp);
+        hgamma_rp->Fill(4, gamma_sinsin_os_rp);
+        hgamma_rp->Fill(5, gamma_coscos_ss_rp - gamma_sinsin_ss_rp);
+        hgamma_rp->Fill(6, gamma_coscos_os_rp - gamma_sinsin_os_rp);
 
-	//===============Compute the MSC Correlatior: prepare the data================================
+        hgamma_v2_rp->Fill(v2full_rp, (gamma_coscos_os_rp - gamma_sinsin_os_rp) - (gamma_coscos_ss_rp - gamma_sinsin_ss_rp));
+        hgamma_ss_v2_rp->Fill(v2full_rp, gamma_coscos_ss_rp - gamma_sinsin_ss_rp);
+        hgamma_os_v2_rp->Fill(v2full_rp, gamma_coscos_os_rp - gamma_sinsin_os_rp);
+	//===============Compute the MSC Correlatior: prepare the data==============================
 	double coefficient = pow(3.1415926/4, 2);
 	std::vector<int> Quadrant_west_ep;
 	std::vector<int> Quadrant_east_ep;
@@ -1367,7 +1366,7 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 	for(int i = 0; i < nn; i++){
 	    if(Eta[i] < 0){ // particles in east sub-event
 		Quadrant_west_ep.push_back(Phi_bin(cycle(Phi[i] - EP_west)));
-		Charge_wrt_west_ep.push_back(Charge[i]); 
+		Charge_wrt_west_ep.push_back(Charge[i]);
                 Phi_west_ep.push_back(Phi[i]);
 	    }
 	    else{
@@ -1381,7 +1380,7 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 	assert(Charge_wrt_west_ep.size() == Charge_wrt_east_ep.size());
 	assert(Phi_west_ep.size() == Phi_east_ep.size());
 
-	//===============Compute MSC Correlator: input data========================================
+	//===============Compute MSC Correlator: input data, i.e., reaction plane========================================
 	int npairs_msc_ss_rp = 0;
 	int npairs_msc_os_rp = 0;
 	double ss_in_rp = 0;
@@ -1455,11 +1454,19 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 		    npairs_ss_west_ep++; 
 		    ss_in_west_ep += sign_in_0_west_ep * sign_in_1_west_ep;
 		    ss_out_west_ep += sign_out_0_west_ep * sign_out_1_west_ep;
+
+                    gamma_ss_west_ep += cos(Phi_west_ep[i] + Phi_west_ep[j] - 2*EP_west);
+                    gamma_coscos_ss_west_ep += cos(Phi_west_ep[i] - EP_west) * cos(Phi_west_ep[j] - EP_west);
+                    gamma_sinsin_ss_west_ep += sin(Phi_west_ep[i] - EP_west) * sin(Phi_west_ep[j] - EP_west);
 		}
 		else{
 		    npairs_os_west_ep++;
 		    os_in_west_ep += sign_in_0_west_ep * sign_in_1_west_ep;
 		    os_out_west_ep += sign_out_0_west_ep * sign_out_1_west_ep;
+
+		    gamma_os_west_ep += cos(Phi_west_ep[i] + Phi_west_ep[j] - 2*EP_west);
+                    gamma_coscos_os_west_ep += cos(Phi_west_ep[i] - EP_west) * cos(Phi_west_ep[j] - EP_west);
+                    gamma_sinsin_os_west_ep += sin(Phi_west_ep[i] - EP_west) * sin(Phi_west_ep[j] - EP_west);
 		}
 	    }
 	}
@@ -1468,6 +1475,13 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 	ss_out_west_ep /= npairs_ss_west_ep;
 	os_in_west_ep /= npairs_os_west_ep;
 	os_out_west_ep /= npairs_os_west_ep;
+
+        gamma_ss_west_ep /= npairs_ss_west_ep;
+        gamma_coscos_ss_west_ep /= npairs_ss_west_ep;
+        gamma_sinsin_ss_west_ep /= npairs_ss_west_ep;
+	gamma_os_west_ep /= npairs_os_west_ep;
+        gamma_coscos_os_west_ep /= npairs_os_west_ep;
+        gamma_sinsin_os_west_ep /= npairs_os_west_ep;
 
 	hmsc_west_ep->Fill(1, coefficient * ss_in_west_ep);
 	hmsc_west_ep->Fill(2, coefficient * ss_out_west_ep);
@@ -1479,6 +1493,17 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 	hmsc_ss_v2_west_ep->Fill(v2ch_east_ep, coefficient * (ss_in_west_ep - ss_out_west_ep));
 	hmsc_os_v2_west_ep->Fill(v2ch_east_ep, coefficient * (os_in_west_ep - os_out_west_ep));
 
+	hgamma_west_ep->Fill(1, gamma_coscos_ss_west_ep);
+        hgamma_west_ep->Fill(2, gamma_sinsin_ss_west_ep);
+        hgamma_west_ep->Fill(3, gamma_coscos_os_west_ep);
+        hgamma_west_ep->Fill(4, gamma_sinsin_os_west_ep);
+        hgamma_west_ep->Fill(5, gamma_coscos_ss_west_ep - gamma_sinsin_ss_west_ep);
+        hgamma_west_ep->Fill(6, gamma_coscos_os_west_ep - gamma_sinsin_os_west_ep);
+
+        hgamma_ss_v2_west_ep->Fill(v2ch_east_ep, gamma_coscos_ss_west_ep - gamma_sinsin_ss_west_ep);
+        hgamma_os_v2_west_ep->Fill(v2ch_east_ep, gamma_coscos_os_west_ep - gamma_sinsin_os_west_ep);
+        hgamma_v2_west_ep->Fill(v2ch_east_ep, (gamma_coscos_os_west_ep - gamma_sinsin_os_west_ep) - (gamma_coscos_ss_west_ep - gamma_sinsin_ss_west_ep));
+
 	//<================Compute the MSC Correlator: west data, east ep======================>
 	int npairs_ss_east_ep = 0;
 	int npairs_os_east_ep = 0;
@@ -1486,6 +1511,14 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 	double ss_out_east_ep = 0;
 	double os_in_east_ep = 0;
 	double os_out_east_ep = 0;
+
+        double gamma_ss_east_ep = 0;
+        double gamma_coscos_ss_east_ep = 0;
+        double gamma_sinsin_ss_east_ep = 0;
+        double gamma_os_east_ep = 0;
+        double gamma_coscos_os_east_ep = 0;
+        double gamma_sinsin_os_east_ep = 0;
+
 	for(int i = 0; i < Quadrant_east_ep.size(); i++){
 
 	    int sign_in_0_east_ep = (Quadrant_east_ep[i] == 1 || Quadrant_east_ep[i] == 4)? 1 : -1;
@@ -1501,11 +1534,19 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 		    npairs_ss_east_ep++; 
 		    ss_in_east_ep += sign_in_0_east_ep * sign_in_1_east_ep;
 		    ss_out_east_ep += sign_out_0_east_ep * sign_out_1_east_ep;
+
+		    gamma_ss_east_ep += cos(Phi_east_ep[i] + Phi_east_ep[j] - 2*EP_east);
+                    gamma_coscos_ss_east_ep += cos(Phi_east_ep[i] - EP_east) * cos(Phi_east_ep[j] - EP_east);
+                    gamma_sinsin_ss_east_ep += sin(Phi_east_ep[i] - EP_east) * sin(Phi_east_ep[j] - EP_east);
 		}
 		else{
 		    npairs_os_east_ep++;
 		    os_in_east_ep += sign_in_0_east_ep * sign_in_1_east_ep;
 		    os_out_east_ep += sign_out_0_east_ep * sign_out_1_east_ep;
+
+		    gamma_ss_east_ep += cos(Phi_east_ep[i] + Phi_east_ep[j] - 2*EP_east);
+                    gamma_coscos_ss_east_ep += cos(Phi_east_ep[i] - EP_east) * cos(Phi_east_ep[j] - EP_east);
+                    gamma_sinsin_ss_east_ep += sin(Phi_east_ep[i] - EP_east) * sin(Phi_east_ep[j] - EP_east);
 		}
 	    }
 	}
@@ -1514,6 +1555,13 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 	ss_out_east_ep /= npairs_ss_east_ep;
 	os_in_east_ep /= npairs_os_east_ep;
 	os_out_east_ep /= npairs_os_east_ep;
+
+        gamma_ss_east_ep /= npairs_ss_east_ep;
+        gamma_coscos_ss_east_ep /= npairs_ss_east_ep;
+        gamma_sinsin_ss_east_ep /= npairs_ss_east_ep;
+	gamma_os_east_ep /= npairs_os_east_ep;
+        gamma_coscos_os_east_ep /= npairs_os_east_ep;
+        gamma_sinsin_os_east_ep /= npairs_os_east_ep;
 
 	hmsc_east_ep->Fill(1, coefficient * ss_in_east_ep);
 	hmsc_east_ep->Fill(2, coefficient * ss_out_east_ep);
@@ -1524,6 +1572,10 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 
 	hmsc_ss_v2_east_ep->Fill(v2ch_west_ep, coefficient * (ss_in_east_ep - ss_out_east_ep));
 	hmsc_os_v2_east_ep->Fill(v2ch_west_ep, coefficient * (os_in_east_ep - os_out_east_ep));
+
+	hgamma_ss_v2_east_ep->Fill(v2ch_west_ep, gamma_coscos_ss_east_ep - gamma_sinsin_ss_east_ep);
+        hgamma_os_v2_east_ep->Fill(v2ch_west_ep, gamma_coscos_os_east_ep - gamma_sinsin_os_east_ep);
+        hgamma_v2_east_ep->Fill(v2ch_west_ep, (gamma_coscos_os_east_ep - gamma_sinsin_os_east_ep) - (gamma_coscos_ss_east_ep - gamma_sinsin_ss_east_ep));
 
 	//==========================Angle difference between east and west for events with v2==0 ======
 	if(fabs(v2full_rp) < 1e-4){
