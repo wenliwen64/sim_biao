@@ -1376,9 +1376,9 @@ int simulation_v2(int argc=0, int particlenum = 500, int eventsnum = 100000)
 	    }
 	}
 
-	assert(Quadrant_west_ep.size() == Quadrant_east_ep.size());
-	assert(Charge_wrt_west_ep.size() == Charge_wrt_east_ep.size());
-	assert(Phi_west_ep.size() == Phi_east_ep.size());
+	//assert(Quadrant_west_ep.size() == Quadrant_east_ep.size());
+	//assert(Charge_wrt_west_ep.size() == Charge_wrt_east_ep.size());
+	//assert(Phi_west_ep.size() == Phi_east_ep.size());
 
 	//===============Compute MSC Correlator: input data, i.e., reaction plane========================================
 	int npairs_msc_ss_rp = 0;
