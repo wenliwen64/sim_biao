@@ -21,6 +21,7 @@
 	Name.Form("EP orientation diff. with multiplicity %d", n_par);
 	hangle_diff_west_ep->SetTitle(Name.Data());
 	hangle_diff_west_ep->GetXaxis()->SetTitle("Angle Diff.");
+	hangle_diff_west_ep->GetYaxis()->SetTitle("Normalized prob.");
 	hangle_diff_west_ep->Draw();
 
         // Input
@@ -28,6 +29,11 @@
 	hangle_diff_rp->Scale(1./hangle_diff_rp->GetEntries());
         hangle_diff_rp->SetLineColor(2);
 	hangle_diff_rp->Draw("same");
+
+        TLegend* leg = new TLegend(.1, .7, .3, .9);
+	leg->AddEntry(hangle_diff_rp, "input v2=0");
+	leg->AddEntry(hangle_diff_west_ep, "reconstructed  v2=0");
+	leg->Draw();
     }
     can->SaveAs("angle_diff_50to600.eps");
     can->SaveAs("angle_diff_50to600.png");
@@ -53,6 +59,8 @@
 	title.Form("msc input v.s. recon. with n_part_%d", n_par);
 	msc_os_rp->SetTitle(title.Data());
 	msc_os_rp->GetYaxis()->SetRangeUser(-0.003, 0.003);
+	msc_os_rp->GetXaxis()->SetTitle("v2");
+	msc_os_rp->GetYaxis()->SetTitle("msc_{os/ss}");
 	msc_os_rp->Draw("p");
 	msc_ss_rp->Draw("p same");
 
@@ -101,6 +109,8 @@
 	title.Form("gamma input v.s. recon. with n_part_%d", n_par);
 	gamma_os_rp->SetTitle(title.Data());
 	gamma_os_rp->GetYaxis()->SetRangeUser(-0.003, 0.003);
+	gamma_os_rp->GetXaxis()->SetTitle("v2");
+	gamma_os_rp->GetYaxis()->SetTitle("#gamma_{os/ss}");
 	gamma_os_rp->Draw("p");
 	gamma_ss_rp->Draw("p same");
 
@@ -127,6 +137,4 @@
     }
     can_gamma->SaveAs("gamma_50to60.eps");
     can_gamma->SaveAs("gamma_50to60.png");
-
-
 }
