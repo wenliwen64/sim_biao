@@ -22,6 +22,7 @@
 	hangle_diff_west_ep->SetTitle(Name.Data());
 	hangle_diff_west_ep->GetXaxis()->SetTitle("Angle Diff.");
 	hangle_diff_west_ep->GetYaxis()->SetTitle("Normalized prob.");
+	gPad->SetTicks(1, 1);
 	hangle_diff_west_ep->Draw();
 
         // Input
@@ -34,6 +35,7 @@
 	leg->AddEntry(hangle_diff_rp, "input v2=0");
 	leg->AddEntry(hangle_diff_west_ep, "reconstructed  v2=0");
 	leg->Draw();
+
     }
     can->SaveAs("angle_diff_50to600.eps");
     can->SaveAs("angle_diff_50to600.png");
@@ -61,6 +63,7 @@
 	msc_os_rp->GetYaxis()->SetRangeUser(-0.003, 0.003);
 	msc_os_rp->GetXaxis()->SetTitle("v2");
 	msc_os_rp->GetYaxis()->SetTitle("msc_{os/ss}");
+	gPad->SetTicks(1, 1);
 	msc_os_rp->Draw("p");
 	msc_ss_rp->Draw("p same");
 
@@ -111,6 +114,7 @@
 	gamma_os_rp->GetYaxis()->SetRangeUser(-0.003, 0.003);
 	gamma_os_rp->GetXaxis()->SetTitle("v2");
 	gamma_os_rp->GetYaxis()->SetTitle("#gamma_{os/ss}");
+	gPad->SetTicks(1, 1);
 	gamma_os_rp->Draw("p");
 	gamma_ss_rp->Draw("p same");
 
