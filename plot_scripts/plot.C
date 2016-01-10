@@ -20,6 +20,7 @@
 	hangle_diff_west_ep->Scale(1./hangle_diff_west_ep->GetEntries());
 	Name.Form("EP orientation diff. with multiplicity %d", n_par);
 	hangle_diff_west_ep->SetTitle(Name.Data());
+	hangle_diff_west_ep->GetYaxis()->CenterTitle();
 	hangle_diff_west_ep->GetXaxis()->SetTitle("Angle Diff.");
 	hangle_diff_west_ep->GetYaxis()->SetTitle("Normalized prob.");
 	gPad->SetTicks(1, 1);
@@ -62,6 +63,7 @@
 	msc_os_rp->SetTitle(title.Data());
 	msc_os_rp->GetYaxis()->SetRangeUser(-0.003, 0.003);
 	msc_os_rp->GetXaxis()->SetTitle("v2");
+	msc_os_rp->GetYaxis()->CenterTitle();
 	msc_os_rp->GetYaxis()->SetTitle("msc_{os/ss}");
 	gPad->SetTicks(1, 1);
 	msc_os_rp->Draw("p");
@@ -112,6 +114,7 @@
 	title.Form("gamma input v.s. recon. with n_part_%d", n_par);
 	gamma_os_rp->SetTitle(title.Data());
 	gamma_os_rp->GetYaxis()->SetRangeUser(-0.003, 0.003);
+	gamma_os_rp->GetYaxis()->CenterTitle();
 	gamma_os_rp->GetXaxis()->SetTitle("v2");
 	gamma_os_rp->GetYaxis()->SetTitle("#gamma_{os/ss}");
 	gPad->SetTicks(1, 1);
